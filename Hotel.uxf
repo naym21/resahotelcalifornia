@@ -1,0 +1,26 @@
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>930</x><y>310</y><w>210</w><h>90</h></coordinates><panel_attributes>_Chambres_
+--
+chambre_id : int 
+numéro : int 
+capacté : int 
+disponibilité : bool
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>50</x><y>300</y><w>210</w><h>110</h></coordinates><panel_attributes>_Clients_
+--
+client_id : int
+nom : string 
+tél : varchar 
+email: varchar 
+nombre_personnes : int </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>490</x><y>290</y><w>210</w><h>110</h></coordinates><panel_attributes>_Réservation_
+--
+id : int
+date_début : date
+date_fin : date 
+chambres_id : int 
+clients_id : id 
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>250</x><y>330</y><w>260</w><h>50</h></coordinates><panel_attributes>lt=-
+m1=1
+m2=*
+Client réserve &gt;</panel_attributes><additional_attributes>10;20;240;20</additional_attributes></element><element><id>Relation</id><coordinates><x>690</x><y>330</y><w>260</w><h>50</h></coordinates><panel_attributes>lt=-
+m1=*
+m2=1,n
+Chambre réserver &gt;</panel_attributes><additional_attributes>10;20;240;20</additional_attributes></element></diagram>
