@@ -1,8 +1,16 @@
 <?php
 require_once '../config/db_connect.php';
+require_once '../auth/AuthFunctions.php';
+
+if (!hasRole("directeur")) {
+    $encodedMessage = urlencode("ERREUR : Vous n'avez pas les bonnes permissions.");
+    header("Location: /resaHotelCalifornia/auth/login.php?message=$encodedMessage");
+    exit;
+}
 
 // Fonction pour formater les dates
-function formatDate($date) {
+function formatDate($date)
+{
     $timestamp = strtotime($date);
     return $timestamp ? date('d/m/Y', $timestamp) : 'Date invalide';
 }
@@ -21,7 +29,7 @@ try {
     ");
     $stmt->execute();
     $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     die("Erreur de base de données : " . htmlspecialchars($e->getMessage()));
 } finally {
     closeDatabaseConnection($conn);
@@ -30,26 +38,47 @@ try {
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <title>Liste des Réservations</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Lien vers la feuille de style externe -->
     <link rel="stylesheet" href="../assets/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <style>
-        .error { color: red; padding: 10px; margin: 10px 0; }
-        .success { color: green; padding: 10px; margin: 10px 0; }
-        .status-past { color: #dc3545; }
-        .status-active { color: #28a745; }
+        .error {
+            color: red;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .success {
+            color: green;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .status-past {
+            color: #dc3545;
+        }
+
+        .status-active {
+            color: #28a745;
+        }
     </style>
 </head>
+
 <body>
+    <?php include_once '../assets/gestionMessage.php'; ?>
     <?php include '../assets/navbar.php'; ?>
 
-    <?php if(isset($_GET['error'])): ?>
+    <?php if (isset($_GET['error'])): ?>
         <div class="error"><?= htmlspecialchars($_GET['error']) ?></div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['deleted'])): ?>
+        <div class="success">Réservation supprimée avec succès.</div>
     <?php endif; ?>
 
     <div class="container">
@@ -74,21 +103,21 @@ try {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($reservations as $reservation): ?>
+                <?php foreach ($reservations as $reservation): ?>
                     <?php
-                        $aujourd_hui = date('Y-m-d');
-                        $statut = '';
+                    $aujourd_hui = date('Y-m-d');
+                    $statut = '';
 
-                        if ($reservation['date_depart'] < $aujourd_hui) {
-                            $statut_class = 'status-past';
-                            $statut = 'Terminée';
-                        } elseif ($reservation['date_reservation'] <= $aujourd_hui && $reservation['date_depart'] >= $aujourd_hui) {
-                            $statut_class = 'status-active';
-                            $statut = 'En cours';
-                        } else {
-                            $statut_class = '';
-                            $statut = 'À venir';
-                        }
+                    if ($reservation['date_depart'] < $aujourd_hui) {
+                        $statut_class = 'status-past';
+                        $statut = 'Terminée';
+                    } elseif ($reservation['date_reservation'] <= $aujourd_hui && $reservation['date_depart'] >= $aujourd_hui) {
+                        $statut_class = 'status-active';
+                        $statut = 'En cours';
+                    } else {
+                        $statut_class = '';
+                        $statut = 'À venir';
+                    }
                     ?>
                     <tr>
                         <td><?= htmlspecialchars($reservation['id']) ?></td>
@@ -103,8 +132,7 @@ try {
                         <td><?= formatDate($reservation['date_depart']) ?></td>
                         <td class="<?= $statut_class ?>"><?= $statut ?></td>
                         <td>
-                            <a href="viewReservation.php?id=<?= htmlspecialchars($reservation['id']) ?>"><i class="fas fa-eye"></i></a>
-                            <a href="editReservation.php?id=<?= htmlspecialchars($reservation['id']) ?>"><i class="fas fa-pen"></i></a>
+                            <a href="editReservation.php?id=<?= htmlspecialchars($reservation['id']) ?>" class="me-2"><i class="fas fa-pen"></i></a>
                             <a href="deleteReservation.php?id=<?= htmlspecialchars($reservation['id']) ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation?');"><i class="fas fa-trash"></i></a>
                         </td>
                     </tr>
@@ -115,4 +143,5 @@ try {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

@@ -1,199 +1,181 @@
+<?php
+require_once 'auth/authFunctions.php';
+initSession();
+?>
 <!DOCTYPE html>
-
 <html lang="fr">
 
-
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Système de Gestion d'Hôtel</title>
-
-    <!-- Bootstrap CSS -->
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Tableau de bord - Hôtel California</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
         body {
-
-            background-color: #f8f9fa;
-
-            min-height: 100vh;
-
-            display: flex;
-
-            align-items: center;
-
-            padding: 20px;
-
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-
-
-        .dashboard-card {
-
-            transition: transform 0.3s ease;
-
-            border-radius: 15px;
-
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-
+        .dashboard {
+            background-color: #ffffff;
+            color: #2c3e50;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 600px;
         }
 
-
-
-        .dashboard-card:hover {
-
-            transform: translateY(-5px);
-
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
         }
-
-
-
-        .nav-link {
-
-            color: white !important;
-
-            transition: opacity 0.3s ease;
-
-            border-radius: 12px;
-
-            padding: 15px;
-
-            margin-bottom: 10px;
-
-        }
-
-
-
-        .nav-link:hover {
-
-            opacity: 0.9;
-
-        }
-
-
 
         .hotel-icon {
-
-            width: 80px;
-
-            height: 80px;
-
-            margin-bottom: 1rem;
-
+            display: block;
+            text-align: center;
+            font-size: 50px;
+            color: #2980b9;
+            margin-bottom: 20px;
         }
 
+        .nav-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
 
-        .card-header {
+        .nav-link:hover {
+            background-color: #d0d7de;
+            transform: translateY(-2px);
+        }
 
-            border-radius: 15px 15px 0 0;
+        .nav-link i {
+            font-size: 20px;
+            color: #3498db;
+        }
 
+        .nav-link .badge {
+            margin-left: auto;
+            background-color: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 14px;
+        }
+
+        .top-right {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+        }
+
+        .top-right form,
+        .top-right a {
+            display: inline-block;
+        }
+
+        .btn-auth {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-auth:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-logout {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background-color: #c0392b;
+        }
+
+        .alert {
+            text-align: center;
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            font-weight: 500;
         }
     </style>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-        crossorigin="anonymous">
-
 </head>
 
-
-
 <body>
-
-    <div class="container">
-
-        <div class="row justify-content-center">
-
-            <div class="col-md-8 col-lg-6">
-
-                <div class="card dashboard-card shadow-lg">
-
-                    <div class="card-header bg-primary text-white text-center py-4">
-
-                        <h1 class="mb-3">Système de Gestion d'Hôtel</h1>
-
-                        <div class="text-center">
-
-                            <i class="fas fa-hotel hotel-icon"></i>
-
-                        </div>
-
-                    </div>
-
-                    <div class="card-body">
-
-                        <nav class="nav flex-column gap-3">
-
-                            <a href="chambres/listChambres.php"
-
-                                class="nav-link bg-primary fw-bold  align-items-center gap-2">
-
-                                <span class="badge rounded-pill bg-white text-primary px-3 py-1">100+</span>
-
-                                <i class="fas fa-bed me-2"></i>
-
-                                Gestion des Chambres
-
-                            </a>
-
-                            <a href="clients/listClients.php"
-
-                                class="nav-link bg-secondary fw-bold  align-items-center gap-2">
-
-                                <span class="badge rounded-pill bg-white text-secondary px-3 py-1">50+</span>
-
-                                <i class="fas fa-users me-2"></i>
-
-                                Gestion des Clients
-
-                            </a>
-
-                            <a href="reservations/listReservations.php"
-
-                                class="nav-link bg-success fw-bold  align-items-center gap-2">
-
-                                <span class="badge rounded-pill bg-white text-success px-3 py-1">75</span>
-
-                                <i class="fas fa-calendar-check me-2"></i>
-
-                                Gestion des Réservations
-
-                            </a>
-
-                        </nav>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
+    <div class="top-right">
+        <?php if (!isLoggedIn()): ?>
+            <a href="auth/login.php" class="btn-auth" style="background-color: #2980b9;">Connexion</a>
+        <?php else: ?>
+            <form action="/resaHotelCalifornia/auth/logout.php" method="post" class="d-flex">
+                <button type="submit" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            </form>
+        <?php endif; ?>
     </div>
 
+    <div class="dashboard">
+        <?php if (isset($_GET['message'])): ?>
+            <div class="alert"><?= htmlspecialchars($_GET['message']) ?></div>
+        <?php endif; ?>
 
+        <h1>Tableau de bord</h1>
+        <div class="hotel-icon"><i class="fas fa-hotel"></i></div>
 
-    <!-- Bootstrap Bundle avec Popper -->
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+        <div class="nav-section">
+            <a href="chambres/listChambres.php" class="nav-link">
+                <i class="fas fa-bed"></i> Gestion des Chambres
+                <span class="badge">100+</span>
+            </a>
+            <a href="clients/listClients.php" class="nav-link">
+                <i class="fas fa-users"></i> Gestion des Clients
+                <span class="badge">50+</span>
+            </a>
+            <a href="reservations/listReservations.php" class="nav-link">
+                <i class="fas fa-calendar-check"></i> Gestion des Réservations
+                <span class="badge">75</span>
+            </a>
+        </div>
+    </div>
 </body>
-
-
 
 </html>

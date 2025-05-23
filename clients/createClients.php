@@ -31,7 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <?php include '../assets/navbar.php'; ?>
+<?php include_once '../assets/gestionMessage.php'; ?>
+<?php include '../assets/navbar.php'; ?>
 
     <div class="container mt-5">
         <h1 class="mb-4">Ajouter un Client</h1>

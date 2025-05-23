@@ -1,7 +1,12 @@
 <?php
 // Inclusion du fichier de connexion à la base de données
 require_once '../config/db_connect.php';
-
+require_once '../auth/AuthFunctions.php';
+if (!hasRole("directeur")) {
+    $encodedMessage = urlencode("ERREUR : Vous n'avez pas les bonnes permissions.");
+    header("Location: /resaHotelCalifornia/auth/login.php?message=$encodedMessage");
+    exit;
+    }
 // Fonction pour vérifier la disponibilité d'une chambre
 function checkAvailability($chambre_id) {
     try {
@@ -61,7 +66,9 @@ try {
 </head>
 
 <body>
-    <?php include '../assets/navbar.php'; ?>
+<?php include_once '../assets/gestionMessage.php'; ?>
+<?php include '../assets/navbar.php'; ?>
+    
 
     <div class="container">
         <h1>Liste des Chambres</h1>

@@ -1,20 +1,29 @@
 <?php
 require_once '../config/db_connect.php';
+require_once '../auth/AuthFunctions.php';
+
+if (!hasRole("directeur")) {
+    $encodedMessage = urlencode("ERREUR : Vous n'avez pas les bonnes permissions.");
+    header("Location: /resaHotelCalifornia/auth/login.php?message=$encodedMessage");
+    exit;
+}
 
 try {
     $conn = openDatabaseConnection();
     $stmt = $conn->prepare("SELECT * FROM clients ORDER BY nom, prenom");
     $stmt->execute();
     $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     die("Erreur de base de données : " . htmlspecialchars($e->getMessage()));
 } finally {
     closeDatabaseConnection($conn);
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <title>Liste des Clients</title>
     <meta charset="UTF-8">
@@ -24,14 +33,25 @@ try {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <style>
-        .error { color: red; padding: 10px; margin: 10px 0; }
-        .success { color: green; padding: 10px; margin: 10px 0; }
+        .error {
+            color: red;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .success {
+            color: green;
+            padding: 10px;
+            margin: 10px 0;
+        }
     </style>
 </head>
+
 <body>
+    <?php include_once '../assets/gestionMessage.php'; ?>
     <?php include '../assets/navbar.php'; ?>
 
-    <?php if(isset($_GET['error'])): ?>
+    <?php if (isset($_GET['error'])): ?>
         <div class="error"><?= htmlspecialchars($_GET['error']) ?></div>
     <?php endif; ?>
 
@@ -54,7 +74,7 @@ try {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($clients as $client): ?>
+                <?php foreach ($clients as $client): ?>
                     <tr>
                         <td><?= htmlspecialchars($client['client_id']) ?></td>
                         <td><?= htmlspecialchars($client['nom']) ?></td>
@@ -72,4 +92,5 @@ try {
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
+
 </html>
